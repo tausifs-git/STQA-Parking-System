@@ -171,7 +171,7 @@ public class WalletTest {
     void deductASmallAmount() {
         Wallet wallet = new Wallet(100);
         wallet.deductFunds(0.0005);
-        assertEquals(100 - 0.0005, wallet.getBalance());
+        assertEquals(99.9995, wallet.getBalance());
     }
 
 
@@ -181,6 +181,7 @@ public class WalletTest {
     void validTransfer() {
         Wallet wallet_01 = new Wallet();
         Wallet wallet_02 = new Wallet(100.00);
+
         wallet_02.transferFunds(wallet_01, 90.00);
 
         assertEquals(90, wallet_01.getBalance());
@@ -238,7 +239,7 @@ public class WalletTest {
         Wallet wallet_01 = new Wallet(100.00);
         Wallet wallet_02 = new Wallet();
 
-        wallet_01.transferFunds(wallet_02, 100.00);
+        wallet_01.transferFunds(wallet_02, wallet_01.getBalance());
 
         assertEquals(0.00, wallet_01.getBalance());
         assertEquals(100.00, wallet_02.getBalance());
