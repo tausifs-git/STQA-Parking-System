@@ -1,7 +1,5 @@
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +24,7 @@ public class ParkingSlotTest {
         assertSame(ParkingSlotType.LARGE, slot.getSlotType());
         assertTrue(slot.isActive());
         assertTrue(slot.getBookings().isEmpty());
-        assertEquals(0, slot.getBalance());
+        assertEquals(0, slot.c());
     }
 
     // --------------------------------------------------------------------------------
@@ -104,6 +102,9 @@ public class ParkingSlotTest {
         assertFalse(slot_04.isCompatible(truck, start, end));
     }
 
+    // --------------------------------------------------------------------------------
+    // deactivate() -> if a slot is deactivated then slot should be unavailable
+    // isAvailable(LocalDateTime startTime, LocalDateTime endTime)
     @Test
     void testForInactiveSlot() {
         ParkingSlot slot_01 = new ParkingSlot("S1", ParkingSlotType.REGULAR);
@@ -111,5 +112,64 @@ public class ParkingSlotTest {
         slot_01.deactivate();
 
         assertFalse(slot_01.isCompatible(car, start, end));
+        assertFalse(slot_01.isAvailable(start, end));
     }
+
+    // -------------------------------------------------------------------------------------
+    // isAvailable(LocalDateTime startTime, LocalDateTime endTime)
+    @Test
+    void testAvailable() {
+        ParkingSlot slot = new ParkingSlot("S1", ParkingSlotType.LARGE);
+
+        assertTrue(slot.isAvailable(start, end));
+    }
+
+    @Test
+    void testOverlap() {
+        LocalDateTime start_01 = LocalDateTime.of(2026, Month.JUNE, 1, 14, 0);
+        LocalDateTime end_01 = LocalDateTime.of(2026, Month.JUNE, 1, 15, 0);
+
+        LocalDateTime start_02 = LocalDateTime.of(2026, Month.JUNE, 1, 14, 30);
+        LocalDateTime end_02 = LocalDateTime.of(2026, Month.JUNE, 1, 15, 30);
+
+        ParkingSlot slot = new ParkingSlot("S1", ParkingSlotType.REGULAR);
+        Vehicle vehicle = new Vehicle(1001, VehicleType.CAR, 1000);
+        Booking booking = new Booking(101, vehicle, slot, start_01, end_01, 100);
+
+        slot.getBookings().add(booking);
+
+        // assertFalse(slot.getBookings().isEmpty());
+        assertFalse(slot.isAvailable(start_02, end_02));
+    }
+
+    @Test
+    void testBoundaryOverlap() {
+        LocalDateTime start_01 = LocalDateTime.of(2026, Month.JUNE, 1, 3, 0);
+        LocalDateTime end_01 = LocalDateTime.of(2026, Month.JUNE, 1, 4, 0);
+
+        LocalDateTime start_02 = LocalDateTime.of(2026, Month.JUNE, 1, 4, 0);
+        LocalDateTime end_02 = LocalDateTime.of(2026, Month.JUNE, 1, 5, 0);
+
+        ParkingSlot slot = new ParkingSlot("S1", ParkingSlotType.REGULAR);
+        Vehicle vehicle = new Vehicle(1001, VehicleType.CAR, 1000);
+        Booking booking = new Booking(101, vehicle, slot, start_01, end_01, 100);
+
+        slot.getBookings().add(booking);
+
+        // assertFalse(slot.getBookings().isEmpty());
+        assertTrue(slot.isAvailable(start_02, end_02));
+    }
+
+
+    // -------------------------------------------------------------------------------------
+    // slot.getWallet(), slot.getBalance()
+    @Test
+    void testWallet() {
+        ParkingSlot slot = new ParkingSlot("S1", ParkingSlotType.REGULAR);
+
+        slot.getWallet().addFunds(100);
+        assertEquals(100, slot.getBalance());
+    }
+
+
 }
