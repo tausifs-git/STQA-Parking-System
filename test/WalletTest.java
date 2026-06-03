@@ -101,7 +101,7 @@ public class WalletTest {
     // --------------------------------------------------------------
     // deductFunds(double amount)
     @Test
-    void deductingFundToDefaultConstructor() {
+    void deductingFundFromDefaultConstructor() {
         Wallet wallet = new Wallet();
         assertThrows(InsufficientFundsException.class, () -> {
             wallet.deductFunds(10);
@@ -109,7 +109,7 @@ public class WalletTest {
     }
 
     @Test
-    void deductingFundToCustomConstructor() {
+    void deductingFundFromCustomConstructor() {
         Wallet wallet = new Wallet(10.00);
         wallet.deductFunds(0.25);
         assertEquals(9.75, wallet.getBalance());
