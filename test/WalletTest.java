@@ -5,17 +5,6 @@ public class WalletTest {
     private static final double BIG_VALUE = 1e10;
     private static final double SMALL_VALUE = 1e-10;
 
-//    @BeforeEach
-//    void resetSystem() {
-//        ParkingSystem ps = ParkingSystem.getInstance();
-//
-//        ps.setVehicles(new ArrayList<>());
-//        ps.setParkingSlots(new ArrayList<>());
-//        ps.setBookings(new ArrayList<>());
-//        ps.setSYSTEM_WALLET(new Wallet());
-//    }
-
-
     // ----------------------------------------------------------
     // Constructor Wallet(), Wallet(double balance) and getBalance()
     @Test
@@ -273,6 +262,19 @@ public class WalletTest {
         assertThrows(InvalidAmountException.class, () -> {
             wallet_02.transferFunds(wallet_01, -10);
         });
+    }
+
+    @Test
+    void failedTransfer() {
+        Wallet wallet_01 = new Wallet(100.00);
+        Wallet wallet_02 = new Wallet(100.00);
+
+        assertThrows(RuntimeException.class, () -> {
+            wallet_02.transferFunds(null, 15.00);
+        });
+
+        // If transfer fails balance should stay the same. Failed
+        assertEquals(100.00, wallet_02.getBalance());
     }
 
 }
