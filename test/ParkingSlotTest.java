@@ -24,7 +24,7 @@ public class ParkingSlotTest {
         assertSame(ParkingSlotType.LARGE, slot.getSlotType());
         assertTrue(slot.isActive());
         assertTrue(slot.getBookings().isEmpty());
-        assertEquals(0, slot.c());
+        assertEquals(0, slot.getBalance());
     }
 
     // --------------------------------------------------------------------------------
